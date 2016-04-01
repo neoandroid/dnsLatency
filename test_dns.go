@@ -11,6 +11,7 @@ import (
 )
 
 var wg sync.WaitGroup
+var servers []string
 
 func random(min, max int) int {
     rand.Seed(time.Now().Unix())
@@ -39,7 +40,6 @@ func checkDns2(connections int) {
 	defer wg.Done()
 	for i := 0; i<connections ; i++ {
 		target := "messaging.schibsted.io"
-		servers := []string{ "205.251.197.250", "205.251.198.57", "205.251.195.51", "205.251.192.148"}
 		c := dns.Client{}
 		m := dns.Msg{}
 		m.SetQuestion(target+".", dns.TypeA)
@@ -66,6 +66,7 @@ func main() {
 	log.Println("Connections:", *connections)
 
 	wg.Add(*concurrency)
+	servers = []string{ "205.251.197.250", "205.251.198.57", "205.251.195.51", "205.251.192.148"}
 
 	for routine := 0 ; routine < *concurrency ; routine++ {
 		go checkDns2(*connections)
